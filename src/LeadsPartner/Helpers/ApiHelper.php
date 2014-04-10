@@ -1,13 +1,12 @@
 <?php
 
-namespace Varifort\Helpers;
+namespace LeadsPartner\Helpers;
 
 use IntaroCrm\Exception\ApiException;
 use IntaroCrm\Exception\CurlException;
 use IntaroCrm\RestApi;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-use Symfony\Component\Yaml\Yaml;
 
 class ApiHelper {
     private $dir, $fileDate;

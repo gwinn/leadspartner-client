@@ -1,0 +1,10 @@
+/composer.phar
+/config/parameters.ini
+/vendor/
+/log
+# Other
+.DS_Store
+Thumb.db
+/nbproject/*	
+*.php~
+.idea

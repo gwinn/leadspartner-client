@@ -13,8 +13,8 @@ class ApiHelper {
     protected $intaroApi, $log, $params;
 
     protected function initLogger() {
-        $this->log = new Logger('varifort');
-        $this->log->pushHandler(new StreamHandler($this->dir . 'log/varifort.log', Logger::INFO));
+        $this->log = new Logger('leadspartner');
+        $this->log->pushHandler(new StreamHandler($this->dir . 'log/leadspartner.log', Logger::INFO));
     }
 
     public function __construct() {

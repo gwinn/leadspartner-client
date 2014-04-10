@@ -68,7 +68,7 @@ class ApiHelper {
             $this->log->addError('RestApi::customers:' . json_encode($order));
 
             $this->sendMail(
-                'Error: varifort.ru',
+                'Error: IntaroCRM - LeadsPartner',
                 '<p> RestApi::customers:' . $e->getMessage() . '</p>' .
                 '<p> RestApi::customers:' . json_encode($order) . '</p>'
             );
@@ -76,7 +76,7 @@ class ApiHelper {
             $this->log->addError('RestApi::customers::Curl:' . $e->getMessage());
 
             $this->sendMail(
-                'Error: varifort.ru',
+                'Error: IntaroCRM - LeadsPartner',
                 '<p> RestApi::customers::Curl:' . $e->getMessage() . '</p>' .
                 '<p> RestApi::customers::Curl:' . json_encode($order) . '</p>'
             );
@@ -99,7 +99,7 @@ class ApiHelper {
             $this->log->addError('RestApi::orderCreate:' . json_encode($order));
 
             $this->sendMail(
-                'Error: varifort.ru',
+                'Error: IntaroCRM - LeadsPartner',
                 '<p> RestApi::orderCreate:' . $e->getMessage() . '</p>' .
                 '<p> RestApi::orderCreate:' . json_encode($order) . '</p>'
             );
@@ -107,7 +107,7 @@ class ApiHelper {
             $this->log->addError('RestApi::orderCreate::Curl:' . $e->getMessage());
 
             $this->sendMail(
-                'Error: varifort.ru',
+                'Error: IntaroCRM - LeadsPartner',
                 '<p> RestApi::orderCreate::Curl:' . $e->getMessage() . '</p>' .
                 '<p> RestApi::orderCreate::Curl:' . json_encode($order) . '</p>'
             );
@@ -123,7 +123,7 @@ class ApiHelper {
             $this->log->addError('RestApi::orderStatusGroupsList:' . $e->getMessage());
 
             $this->sendMail(
-                'Error: varifort.ru',
+                'Error: IntaroCRM - LeadsPartner',
                 '<p> RestApi::RestApi::orderStatusGroupsList:' . $e->getMessage() . '</p>'
             );
 
@@ -132,7 +132,7 @@ class ApiHelper {
             $this->log->addError('RestApi::orderStatusGroupsList::Curl:' . $e->getMessage());
 
             $this->sendMail(
-                'Error: varifort.ru',
+                'Error: IntaroCRM - LeadsPartner',
                 '<p> RestApi::orderStatusGroupsList::Curl:' . $e->getMessage() . '</p>'
             );
 
@@ -147,7 +147,7 @@ class ApiHelper {
             $this->log->addError('RestApi::orderHistory:' . json_encode($orders));
 
             $this->sendMail(
-                'Error: varifort.ru',
+                'Error: IntaroCRM - LeadsPartner',
                 '<p> RestApi::orderHistory:' . $e->getMessage() . '</p>' .
                 '<p> RestApi::orderHistory:' . json_encode($orders) . '</p>'
             );
@@ -157,7 +157,7 @@ class ApiHelper {
             $this->log->addError('RestApi::orderHistory::Curl:' . $e->getMessage());
 
             $this->sendMail(
-                'Error: varifort.ru',
+                'Error: IntaroCRM - LeadsPartner',
                 '<p> RestApi::orderHistory::Curl:' . $e->getMessage() . '</p>' .
                 '<p> RestApi::orderHistory::Curl:' . json_encode($orders) . '</p>'
             );
@@ -177,7 +177,7 @@ class ApiHelper {
                     $this->log->addError('RestApi::orderGet:' . json_encode($order));
 
                     $this->sendMail(
-                        'Error: varifort.ru',
+                        'Error: IntaroCRM - LeadsPartner',
                         '<p> RestApi::orderGet:' . $e->getMessage() . '</p>' .
                         '<p> RestApi::orderGet:' . json_encode($order) . '</p>'
                     );
@@ -187,7 +187,7 @@ class ApiHelper {
                     $this->log->addError('RestApi::orderGet::Curl:' . $e->getMessage());
 
                     $this->sendMail(
-                        'Error: varifort.ru',
+                        'Error: IntaroCRM - LeadsPartner',
                         '<p> RestApi::orderGet::Curl:' . $e->getMessage() . '</p>' .
                         '<p> RestApi::orderGet::Curl:' . json_encode($order) . '</p>'
                     );
@@ -208,7 +208,7 @@ class ApiHelper {
                     $this->log->addError('RestApi::orderGet:' . json_encode($order));
 
                     $this->sendMail(
-                        'Error: varifort.ru',
+                        'Error: IntaroCRM - LeadsPartner',
                         '<p> RestApi::orderGet:' . $e->getMessage() . '</p>' .
                         '<p> RestApi::orderGet:' . json_encode($order) . '</p>'
                     );
@@ -218,7 +218,7 @@ class ApiHelper {
                     $this->log->addError('RestApi::orderGet::Curl:' . $e->getMessage());
 
                     $this->sendMail(
-                        'Error: varifort.ru',
+                        'Error: IntaroCRM - LeadsPartner',
                         '<p> RestApi::orderGet::Curl:' . $e->getMessage() . '</p>' .
                         '<p> RestApi::orderGet::Curl:' . json_encode($order) . '</p>'
                     );
@@ -241,10 +241,8 @@ class ApiHelper {
 
     private function getDate() {
         $result = file_get_contents($this->fileDate);
-        if(!$result) {
-            $result = new \DateTime();
-            return $result->format('Y-m-d H:i:s');
-        } else return $result;
+        if(!$result) return null;
+        else return $result;
     }
 
     public function sendLP($status, $transaction) {

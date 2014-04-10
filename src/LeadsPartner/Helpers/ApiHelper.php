@@ -31,8 +31,12 @@ class ApiHelper {
     }
 
     public function orderCreate($order) {
+        $queryArr = [];
+
         if(isset($order['query']) && $order['query'])
-            $order['customFields'] = $order['customFields'] + $this->parseUrlQuery($order['query']);
+            parse_str($order['query'], $queryArr);
+
+        $order['customFields'] = $order['customFields'] + $queryArr;
 
         if(isset($order['customer']['fio'])) {
             $contactNameArr = $this->explodeFIO($order['customer']['fio']);
@@ -278,18 +282,6 @@ class ApiHelper {
             return false;
 
         mail($this->params['mail']['to'], $subject, $body, 'From:'.$this->params['mail']['from']);
-    }
-
-    private function parseUrlQuery($query) {
-        $queryParts = explode('&', $query);
-
-        $params = [];
-        foreach ($queryParts as $param) {
-            $item = explode('=', $param);
-            $params[$item[0]] = $item[1];
-        }
-
-        return $params;
     }
 
     private function explodeFIO($str) {

@@ -9,7 +9,7 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 class ApiHelper {
-    private $dir, $fileDate;
+    private $dir, $fileDate, $errDir;
     protected $intaroApi, $log, $params;
 
     protected function initLogger() {
@@ -20,6 +20,7 @@ class ApiHelper {
     public function __construct() {
         $this->dir = __DIR__ . '/../../../';
         $this->fileDate = $this->dir . 'log/historyDate.log';
+        $this->errDir = $this->dir . 'log/json';
         $this->params = parse_ini_file($this->dir . 'config/parameters.ini', true);
 
         $this->intaroApi = new RestApi(
@@ -31,12 +32,7 @@ class ApiHelper {
     }
 
     public function orderCreate($order) {
-        $queryArr = [];
-
-        if(isset($order['query']) && $order['query'])
-            parse_str($order['query'], $queryArr);
-
-        $order['customFields'] = $order['customFields'] + $queryArr;
+        $order['customFields'] = $order['customFields'] + $this->getAdditionalParameters();;
 
         if(isset($order['customer']['fio'])) {
             $contactNameArr = $this->explodeFIO($order['customer']['fio']);
@@ -116,6 +112,7 @@ class ApiHelper {
     }
 
     public function orderHistory() {
+        $this->sendErrorJson();
 
         try {
             $statuses = $this->intaroApi->orderStatusGroupsList();
@@ -241,11 +238,13 @@ class ApiHelper {
 
     private function getDate() {
         $result = file_get_contents($this->fileDate);
-        if(!$result) return null;
-        else return $result;
+        if(!$result) {
+            $result = new \DateTime();
+            return $result->format('Y-m-d H:i:s');
+        } else return $result;
     }
 
-    public function sendLP($status, $transaction) {
+    public function sendLP($status, $transaction, $timesSent = 1) {
         if(!$status || !$transaction)
             return false;
 
@@ -269,10 +268,44 @@ class ApiHelper {
         );
 
         $result = curl_exec($ch);
-        $this->log->addError('RestApi::leadspartner::Curl:' . json_encode($result));
-        //$this->log->addError('RestApi::leadspartner::Curl:' . json_encode($data));
+
+        if(!isset($result['result']) && !$result['resut'] && $result['result'] !== 'ok') {
+            $data['times_sent'] = $timesSent;
+
+            if($data['times_sent'] < 4)
+                $this->writeErrorJson($data);
+
+            $this->log->addError('RestApi::leadspartner::Curl:' . json_encode($result));
+            $this->log->addError('RestApi::leadspartner::Curl:' . json_encode($data));
+        }
 
         return $result;
+    }
+
+    public function setAdditionalParameters($query)
+    {
+        if(!$query) return;
+
+        $params = [];
+        parse_str($query, $params);
+        $params = array_merge($this->getAdditionalParameters(), $params);
+
+        foreach ($params as $key => $param) {
+            if (empty($param)) {
+                unset($params[$key]);
+            }
+        }
+
+        setcookie($this->params['cookie_name'], serialize($params), time() + 60 * 60 * 24 * 365, '/');
+    }
+
+    public function getAdditionalParameters()
+    {
+        if (!isset($_COOKIE[$this->params['cookie_name']])) {
+            return [];
+        }
+
+        return unserialize($_COOKIE[$this->params['cookie_name']]);
     }
 
     protected function sendMail($subject, $body) {
@@ -304,5 +337,40 @@ class ApiHelper {
             if($s == $status) return true;
 
         return false;
+    }
+
+    private function sendErrorJson() {
+        foreach($this->getErrorFiles() as $fileName) {
+            $result = $this->getErrorJson($fileName);
+            $this->unlinkErrorJson($fileName);
+            if(isset($result['status']) && $result['status'] && isset($result['transaction_id'])
+                && $result['transaction_id'] && isset($result['times_sent'])
+                && $result['times_sent'] && $result['times_sent'] < 4)
+                $this->sendLP($result['status'], $result['transaction_id'], $result['times_sent'] + 1);
+        }
+    }
+
+    private function getErrorFiles() {
+        return glob($this->errDir . '/err_*.json', GLOB_BRACE);
+    }
+
+    private function unlinkErrorJson($fileName) {
+        unlink($this->errDir . '/' . $fileName);
+    }
+
+    private function getErrorJson($fileName) {
+        $result = file_get_contents($this->errDir . '/' . $fileName);
+        if(!$result) return [];
+        $result = json_encode($result, true);
+        if(is_array($result)) return $result;
+        else return [];
+    }
+
+    private function writeErrorJson(array $data) {
+        file_put_contents($this->getErrFileName(), json_encode($data), LOCK_EX);
+    }
+
+    private function getErrFileName() {
+        return $this->errDir . '/err_' . (microtime(true) * 10000) . mt_rand(1, 1000) .'.json';
     }
 }

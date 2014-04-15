@@ -32,7 +32,7 @@ class ApiHelper {
     }
 
     public function orderCreate($order) {
-        $order['customFields'] = $order['customFields'] + $this->getAdditionalParameters();;
+        $order['customFields'] = $order['customFields'] + $this->getAdditionalParameters();
 
         if(isset($order['customer']['fio'])) {
             $contactNameArr = $this->explodeFIO($order['customer']['fio']);

@@ -15,8 +15,8 @@ class HistoryCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('varifort:history')
-            ->setDescription('history update')
+            ->setName('update-cpa')
+            ->setDescription('Установка статусов в CPA в соответствии с данными о статусах заказов из IntaroCRM')
         ;
     }
 

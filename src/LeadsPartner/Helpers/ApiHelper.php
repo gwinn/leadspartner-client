@@ -344,7 +344,7 @@ class ApiHelper {
     private function sendErrorJson() {
         foreach($this->getErrorFiles() as $fileName) {
             $result = $this->getErrorJson($fileName);
-            $this->unlinkErrorJson($fileName);
+            unlink($fileName);
             if(isset($result['status']) && $result['status'] && isset($result['transaction_id'])
                 && $result['transaction_id'] && isset($result['times_sent'])
                 && $result['times_sent'] && $result['times_sent'] < 4)
@@ -354,10 +354,6 @@ class ApiHelper {
 
     private function getErrorFiles() {
         return glob($this->errDir . '/err_*.json', GLOB_BRACE);
-    }
-
-    private function unlinkErrorJson($fileName) {
-        unlink($fileName);
     }
 
     private function getErrorJson($fileName) {

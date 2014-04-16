@@ -13,20 +13,27 @@ Tool for simple integration between [IntaroCRM](http://www.intarocrm.ru/) and [L
 * Use command `php composer.phar update` to download vendors.
  
 ### Settings .ini file
-It is needed to setup your configutarions in a `parameters.ini` file (example is a `parameters-dist.ini` file).
+It is needed to setup your configutarions in a `config/parameters.ini` file (example is a `config/parameters-dist.ini` file).
 
-### Sample
+### Sample of code for enter page for transaction fixing
 
 ```php
 require_once __DIR__ . '/leadspartner-client/vendor/autoload.php'; // require autoloader
 $intaroApi = new LeadsPartner\Helpers\ApiHelper(); // create api helper
 $intaroApi->setAdditionalParameters($_SERVER['QUERY_STRING']); // setting additional params in user cookies
+```
+
+### Sample of code for form processing script
+
+```php
+require_once __DIR__ . '/leadspartner-client/vendor/autoload.php'; // require autoloader
+$intaroApi = new LeadsPartner\Helpers\ApiHelper(); // create api helper
 
 $order = [
     'orderMethod'  => 'some-order-method',
     'customer' => [
         'fio'   => 'user name',
-        'phone' => ['user phone']
+        'phone' => ['+79123456789']
                 
     ],
     'customFields' => [
@@ -42,6 +49,6 @@ $intaroApi->orderCreate($order);
 Add this command, to send request with changed statuses to LeadsPartner every 5 mins:
 
 ```bash
-*/5 * * * * php /.../leadspartner-client/console.php varifort:history
+*/5 * * * * php leadspartner-client/console.php update-cpa
 ```
 

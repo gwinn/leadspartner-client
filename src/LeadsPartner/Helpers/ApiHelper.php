@@ -269,7 +269,9 @@ class ApiHelper {
 
         $result = curl_exec($ch);
 
-        if(!isset($result['result']) && !$result['resut'] && $result['result'] !== 'ok') {
+        if(!isset($result['result']) || (isset($result['result']) && !$result['result']) ||
+            (isset($result['result']) && $result['result'] != 'ok')) {
+
             $data['times_sent'] = $timesSent;
 
             if($data['times_sent'] < 4)
@@ -346,7 +348,7 @@ class ApiHelper {
             if(isset($result['status']) && $result['status'] && isset($result['transaction_id'])
                 && $result['transaction_id'] && isset($result['times_sent'])
                 && $result['times_sent'] && $result['times_sent'] < 4)
-                $this->sendLP($result['status'], $result['transaction_id'], $result['times_sent'] + 1);
+                $this->sendLP($result['status'], $result['transaction_id'], ++$result['times_sent']);
         }
     }
 
@@ -355,13 +357,13 @@ class ApiHelper {
     }
 
     private function unlinkErrorJson($fileName) {
-        unlink($this->errDir . '/' . $fileName);
+        unlink($fileName);
     }
 
     private function getErrorJson($fileName) {
-        $result = file_get_contents($this->errDir . '/' . $fileName);
+        $result = file_get_contents($fileName);
         if(!$result) return [];
-        $result = json_encode($result, true);
+        $result = json_decode($result, true);
         if(is_array($result)) return $result;
         else return [];
     }

@@ -1,4 +1,4 @@
-IntaroCRM - LeadsPartner interation tool
+IntaroCRM - LeadsPartner integration tool
 ===================
 
 Tool for simple integration between [IntaroCRM](http://www.intarocrm.ru/) and [LeadsPartner](http://leadspartner.ru/).

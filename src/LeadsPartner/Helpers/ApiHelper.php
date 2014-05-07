@@ -78,8 +78,10 @@ class ApiHelper {
             );
         }
 
-        if(count($customers) > 0)
-            $order['customerId'] = current($customers)['externalId'];
+        if(count($customers) > 0) {
+            $customer = current($customers);
+            $order['customerId'] = $customer['externalId'];
+        }
         else
             $order['customerId'] = (microtime(true) * 10000) . mt_rand(1, 1000);
 

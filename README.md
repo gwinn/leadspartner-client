@@ -29,17 +29,23 @@ $intaroApi->setAdditionalParameters($_SERVER['QUERY_STRING']); // setting additi
 require_once __DIR__ . '/leadspartner-client/vendor/autoload.php'; // require autoloader
 $intaroApi = new LeadsPartner\Helpers\ApiHelper(); // create api helper
 
-$order = [
+$order = array(
     'orderMethod'  => 'some-order-method',
-    'customer' => [
+    'customer' => array(
         'fio'   => 'user name',
-        'phone' => ['+79123456789']
+        'phone' => array('+79123456789'),
                 
-    ],
-    'customFields' => [
+    ),
+    'customFields' => array(
         'form_type' => 'some-form-type'
-    ]
-];
+    ),
+    'items' => array(
+        array(
+            'quantity' => 1,
+            'productId' => 1,
+        ),
+    ),
+);
 
 $intaroApi->orderCreate($order);
 ```

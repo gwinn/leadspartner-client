@@ -248,13 +248,13 @@ class ApiHelper {
         if(!$status || !$transaction)
             return false;
 
-        $data = [
+        $data = array(
             "login"          => $this->params['leadspartner']['login'],
             "password"       => $this->params['leadspartner']['password'],
             "Target"         => $this->params['leadspartner']['target'],
             "transaction_id" => $transaction,
             "status"         => $status
-        ];
+        );
 
         $data_string = json_encode($data);
         $ch = curl_init($this->params['leadspartner']['url']);
@@ -288,7 +288,7 @@ class ApiHelper {
     {
         if(!$query) return;
 
-        $params = [];
+        $params = array();
         parse_str($query, $params);
         $params = array_merge($this->getAdditionalParameters(), $params);
 
@@ -304,7 +304,7 @@ class ApiHelper {
     public function getAdditionalParameters()
     {
         if (!isset($_COOKIE[$this->params['cookie_name']])) {
-            return [];
+            return array();
         }
 
         return unserialize($_COOKIE[$this->params['cookie_name']]);
@@ -319,10 +319,10 @@ class ApiHelper {
 
     private function explodeFIO($str) {
         if(!$str)
-            return [];
+            return array();
 
         $array = explode(" ", $str, 3);
-        $newArray = [];
+        $newArray = array();
 
         foreach($array as $ar) {
             if(!$ar)
@@ -358,10 +358,10 @@ class ApiHelper {
 
     private function getErrorJson($fileName) {
         $result = file_get_contents($fileName);
-        if(!$result) return [];
+        if(!$result) return array();
         $result = json_decode($result, true);
         if(is_array($result)) return $result;
-        else return [];
+        else return array();
     }
 
     private function writeErrorJson(array $data) {

@@ -265,8 +265,10 @@ class ApiHelper {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_HTTPHEADER,
-               ['Content-Type: application/json',
-                'Content-Length: ' . strlen($data_string)]
+            array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data_string)
+            )
         );
 
         $result = curl_exec($ch);

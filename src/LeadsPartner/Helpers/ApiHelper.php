@@ -32,6 +32,9 @@ class ApiHelper {
     }
 
     public function orderCreate($order) {
+        if (!isset($order['customFields'])) {
+            $order['customFields'] = array();
+        }
         $order['customFields'] = array_merge($order['customFields'], $this->getAdditionalParameters());
 
         if(isset($order['customer']['fio'])) {

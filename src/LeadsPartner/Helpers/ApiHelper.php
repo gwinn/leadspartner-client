@@ -10,9 +10,7 @@ use Monolog\Handler\StreamHandler;
 
 class ApiHelper {
     private $dir, $fileDate, $errDir;
-    protected $intaroApi, $log, $params;
-
-    protected static $acceptedCustomFields = [];
+    protected $intaroApi, $log, $params, $acceptedCustomFields = [];
 
     protected function initLogger() {
         $this->log = new Logger('leadspartner');
@@ -29,7 +27,7 @@ class ApiHelper {
             $this->params['intarocrm_api']['url'],
             $this->params['intarocrm_api']['key']
         );
-	$accepted_custom_fields=explode(',',str_replace(" ","",$this->params['accepted_custom_fields']));
+	$this->acceptedCustomFields = explode(',', str_replace(" ", "", $this->params['accepted_custom_fields']));
         $this->initLogger();
     }
     public function orderCreate($order) {

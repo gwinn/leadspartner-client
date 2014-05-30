@@ -10,7 +10,7 @@ use Monolog\Handler\StreamHandler;
 
 class ApiHelper {
     private $dir, $fileDate, $errDir;
-    protected $intaroApi, $log, $params, $acceptedCustomFields = [];
+    protected $intaroApi, $log, $params, $acceptedCustomFields = array();
 
     protected function initLogger() {
         $this->log = new Logger('leadspartner');

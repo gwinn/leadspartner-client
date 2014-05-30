@@ -12,6 +12,8 @@ class ApiHelper {
     private $dir, $fileDate, $errDir;
     protected $intaroApi, $log, $params;
 
+    protected static $acceptedCustomFields = [];
+
     protected function initLogger() {
         $this->log = new Logger('leadspartner');
         $this->log->pushHandler(new StreamHandler($this->dir . 'log/leadspartner.log', Logger::INFO));
@@ -27,15 +29,14 @@ class ApiHelper {
             $this->params['intarocrm_api']['url'],
             $this->params['intarocrm_api']['key']
         );
-
+	$accepted_custom_fields=explode(',',str_replace(" ","",$this->params['accepted_custom_fields']));
         $this->initLogger();
     }
-
     public function orderCreate($order) {
-        if (!isset($order['customFields'])) {
-            $order['customFields'] = array();
-        }
-        $order['customFields'] = array_merge($order['customFields'], $this->getAdditionalParameters());
+        $order['customFields'] = array_intersect_key(
+        	$order['customFields'] + $this->getAdditionalParameters(),
+            array_flip(self::$acceptedCustomFields)
+        );
 
         if(isset($order['customer']['fio'])) {
             $contactNameArr = $this->explodeFIO($order['customer']['fio']);
@@ -67,7 +68,7 @@ class ApiHelper {
             $this->log->addError('RestApi::customers:' . json_encode($order));
 
             $this->sendMail(
-                'Error: IntaroCRM - LeadsPartner',
+                'Error: IntaroCRM - LeadsPartner - ' . $this->params['domain_name'],
                 '<p> RestApi::customers:' . $e->getMessage() . '</p>' .
                 '<p> RestApi::customers:' . json_encode($order) . '</p>'
             );
@@ -75,7 +76,7 @@ class ApiHelper {
             $this->log->addError('RestApi::customers::Curl:' . $e->getMessage());
 
             $this->sendMail(
-                'Error: IntaroCRM - LeadsPartner',
+                'Error: IntaroCRM - LeadsPartner - ' . $this->params['domain_name'],
                 '<p> RestApi::customers::Curl:' . $e->getMessage() . '</p>' .
                 '<p> RestApi::customers::Curl:' . json_encode($order) . '</p>'
             );
@@ -100,7 +101,7 @@ class ApiHelper {
             $this->log->addError('RestApi::orderCreate:' . json_encode($order));
 
             $this->sendMail(
-                'Error: IntaroCRM - LeadsPartner',
+                'Error: IntaroCRM - LeadsPartner - ' . $this->params['domain_name'],
                 '<p> RestApi::orderCreate:' . $e->getMessage() . '</p>' .
                 '<p> RestApi::orderCreate:' . json_encode($order) . '</p>'
             );
@@ -108,7 +109,7 @@ class ApiHelper {
             $this->log->addError('RestApi::orderCreate::Curl:' . $e->getMessage());
 
             $this->sendMail(
-                'Error: IntaroCRM - LeadsPartner',
+                'Error: IntaroCRM - LeadsPartner - ' . $this->params['domain_name'],
                 '<p> RestApi::orderCreate::Curl:' . $e->getMessage() . '</p>' .
                 '<p> RestApi::orderCreate::Curl:' . json_encode($order) . '</p>'
             );
@@ -125,7 +126,7 @@ class ApiHelper {
             $this->log->addError('RestApi::orderStatusGroupsList:' . $e->getMessage());
 
             $this->sendMail(
-                'Error: IntaroCRM - LeadsPartner',
+                'Error: IntaroCRM - LeadsPartner - ' . $this->params['domain_name'],
                 '<p> RestApi::RestApi::orderStatusGroupsList:' . $e->getMessage() . '</p>'
             );
 
@@ -134,7 +135,7 @@ class ApiHelper {
             $this->log->addError('RestApi::orderStatusGroupsList::Curl:' . $e->getMessage());
 
             $this->sendMail(
-                'Error: IntaroCRM - LeadsPartner',
+                'Error: IntaroCRM - LeadsPartner - ' . $this->params['domain_name'],
                 '<p> RestApi::orderStatusGroupsList::Curl:' . $e->getMessage() . '</p>'
             );
 
@@ -149,7 +150,7 @@ class ApiHelper {
             $this->log->addError('RestApi::orderHistory:' . json_encode($orders));
 
             $this->sendMail(
-                'Error: IntaroCRM - LeadsPartner',
+                'Error: IntaroCRM - LeadsPartner - ' . $this->params['domain_name'],
                 '<p> RestApi::orderHistory:' . $e->getMessage() . '</p>' .
                 '<p> RestApi::orderHistory:' . json_encode($orders) . '</p>'
             );
@@ -159,7 +160,7 @@ class ApiHelper {
             $this->log->addError('RestApi::orderHistory::Curl:' . $e->getMessage());
 
             $this->sendMail(
-                'Error: IntaroCRM - LeadsPartner',
+                'Error: IntaroCRM - LeadsPartner - ' . $this->params['domain_name'],
                 '<p> RestApi::orderHistory::Curl:' . $e->getMessage() . '</p>' .
                 '<p> RestApi::orderHistory::Curl:' . json_encode($orders) . '</p>'
             );
@@ -179,7 +180,7 @@ class ApiHelper {
                     $this->log->addError('RestApi::orderGet:' . json_encode($order));
 
                     $this->sendMail(
-                        'Error: IntaroCRM - LeadsPartner',
+                        'Error: IntaroCRM - LeadsPartner - ' . $this->params['domain_name'],
                         '<p> RestApi::orderGet:' . $e->getMessage() . '</p>' .
                         '<p> RestApi::orderGet:' . json_encode($order) . '</p>'
                     );
@@ -189,7 +190,7 @@ class ApiHelper {
                     $this->log->addError('RestApi::orderGet::Curl:' . $e->getMessage());
 
                     $this->sendMail(
-                        'Error: IntaroCRM - LeadsPartner',
+                        'Error: IntaroCRM - LeadsPartner - ' . $this->params['domain_name'],
                         '<p> RestApi::orderGet::Curl:' . $e->getMessage() . '</p>' .
                         '<p> RestApi::orderGet::Curl:' . json_encode($order) . '</p>'
                     );
@@ -210,7 +211,7 @@ class ApiHelper {
                     $this->log->addError('RestApi::orderGet:' . json_encode($order));
 
                     $this->sendMail(
-                        'Error: IntaroCRM - LeadsPartner',
+                        'Error: IntaroCRM - LeadsPartner - ' . $this->params['domain_name'],
                         '<p> RestApi::orderGet:' . $e->getMessage() . '</p>' .
                         '<p> RestApi::orderGet:' . json_encode($order) . '</p>'
                     );
@@ -220,7 +221,7 @@ class ApiHelper {
                     $this->log->addError('RestApi::orderGet::Curl:' . $e->getMessage());
 
                     $this->sendMail(
-                        'Error: IntaroCRM - LeadsPartner',
+                        'Error: IntaroCRM - LeadsPartner - ' . $this->params['domain_name'],
                         '<p> RestApi::orderGet::Curl:' . $e->getMessage() . '</p>' .
                         '<p> RestApi::orderGet::Curl:' . json_encode($order) . '</p>'
                     );

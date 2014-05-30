@@ -33,7 +33,7 @@ class ApiHelper {
     public function orderCreate($order) {
         $order['customFields'] = array_intersect_key(
         	$order['customFields'] + $this->getAdditionalParameters(),
-            array_flip(self::$acceptedCustomFields)
+            array_flip($this->acceptedCustomFields)
         );
 
         if(isset($order['customer']['fio'])) {

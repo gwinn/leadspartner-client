@@ -43,6 +43,11 @@ class ApiHelper {
             if(count($contactNameArr) == 1) {
                 $order['firstName']              = $contactNameArr[0];
                 $order['customer']['firstName']  = $contactNameArr[0];
+            } elseif(count($contactNameArr) == 2){
+            	$order['firstName']              = $contactNameArr[0];
+                $order['customer']['firstName']  = $contactNameArr[0];
+                $order['lastName']               = $contactNameArr[1];
+                $order['customer']['lastName']   = $contactNameArr[1];
             } else {
                 $order['lastName']               = $contactNameArr[0];
                 $order['customer']['lastName']   = $contactNameArr[0];
